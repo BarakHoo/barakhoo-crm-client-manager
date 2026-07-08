@@ -1,0 +1,44 @@
+version: '3.8'
+
+# BarakHoo's CRM Client Manager
+# Full-stack CRM system with role-based access control and client assignment
+
+services:
+  db:
+    container_name: barakhoo-crm-db
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: crmdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    container_name: barakhoo-crm-backend
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/crmdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+    ports:
+      - "8080:8080"
+
+  frontend:
+    container_name: barakhoo-crm-frontend
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=localhost
+
+volumes:
+  db_data:

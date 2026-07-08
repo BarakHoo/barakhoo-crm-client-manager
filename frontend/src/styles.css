@@ -1,0 +1,307 @@
+/* Theme Variables */
+:root[data-theme="light"] {
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --card-bg: #ffffff;
+  --navbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --table-hover: #f1f5f9;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+  --success: #34d399;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+  --card-bg: #1e293b;
+  --navbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --input-bg: #334155;
+  --input-border: #475569;
+  --table-hover: #334155;
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+}
+
+/* Modern Card Styling */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+/* Navbar Styling */
+.navbar {
+  background: var(--navbar-bg) !important;
+  box-shadow: var(--shadow-md);
+  padding: 1rem 0;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: white !important;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+/* Modern Form Controls */
+.form-control, .form-select {
+  background-color: var(--input-bg);
+  border: 2px solid var(--input-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: var(--input-bg);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  color: var(--text-primary);
+}
+
+.form-label {
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Modern Buttons */
+.btn {
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.9;
+}
+
+/* Google OAuth Button */
+.btn-google {
+  background: white;
+  color: #1f2937;
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  width: 100%;
+}
+
+[data-theme="dark"] .btn-google {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.btn-google:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--primary);
+}
+
+/* Table Styling */
+.table {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: var(--table-hover);
+  transform: scale(1.01);
+}
+
+/* Badge Styling */
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Modal Styling */
+.modal-content {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+/* Toast Styling */
+.toast {
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Language Switcher */
+.lang-active {
+  border: 2px solid white !important;
+  border-radius: 4px;
+}
+
+/* Smooth Transitions */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Link Styling */
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Container Styling */
+.container {
+  max-width: 1200px;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-border {
+  animation: spin 0.75s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    border-radius: 8px;
+  }
+
+  .btn {
+    padding: 0.625rem 1.25rem;
+  }
+}
