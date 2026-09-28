@@ -35,6 +35,18 @@ export function getUsername() {
   return p.sub || p.username || null
 }
 
+export function isAuthenticated() {
+  const t = getToken()
+  const p = parseJwt(t)
+  if (!p) return false
+  // Treat tokens without/expired `exp` as invalid
+  if (p.exp && Date.now() >= p.exp * 1000) {
+    clearToken()
+    return false
+  }
+  return true
+}
+
 export function authFetch(url, opts = {}) {
   const token = getToken()
   opts.headers = opts.headers || {}
