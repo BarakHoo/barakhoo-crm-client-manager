@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider>
       <I18nProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
           <Layout>
             <Routes>
               <Route path="/" element={<App />} />
