@@ -21,15 +21,22 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-	// No-op patch: trigger rebuild
-	@Value("${app.jwt.secret:ReplaceWithASecretKeyOf32charsMinimum}")
+	@Value("${app.jwt.secret:}")
 	private String jwtSecret;
 
 	@Value("${app.jwt.expiration-ms:86400000}")
 	private long jwtExpirationMs;
 
+	@Value("${app.cors.allowed-origins:}")
+	private String allowedOrigins;
+
 	@Bean
 	public JwtUtil jwtUtil() {
+		if (jwtSecret == null || jwtSecret.trim().length() < 32) {
+			throw new IllegalStateException(
+				"app.jwt.secret must be set to a value of at least 32 characters. "
+				+ "Refusing to start with a missing or weak JWT signing secret.");
+		}
 		return new JwtUtil(jwtSecret, jwtExpirationMs);
 	}
 
@@ -52,26 +59,37 @@ public class SecurityConfig {
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		var configuration = new CorsConfiguration();
-		configuration.setAllowedOriginPatterns(List.of("*"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-		configuration.setAllowedHeaders(Arrays.asList("*"));
-		configuration.setAllowCredentials(true);
-		var source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
+		return buildCorsSource();
 	}
 
 	// A global CorsFilter to ensure CORS headers are present even if security short-circuits
 	@Bean
 	public CorsFilter corsFilter() {
-		var config = new CorsConfiguration();
-		config.setAllowedOriginPatterns(List.of("*"));
-		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-		config.setAllowedHeaders(Arrays.asList("*"));
-		config.setAllowCredentials(true);
+		return new CorsFilter(buildCorsSource());
+	}
+
+	private UrlBasedCorsConfigurationSource buildCorsSource() {
+		var configuration = new CorsConfiguration();
+		var origins = parseOrigins();
+		if (origins.isEmpty()) {
+			// No cross-origin access configured: same-origin only (production is proxied via Caddy).
+			configuration.setAllowedOrigins(List.of());
+		} else {
+			configuration.setAllowedOrigins(origins);
+			configuration.setAllowCredentials(true);
+		}
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 		var source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
+	private List<String> parseOrigins() {
+		if (allowedOrigins == null || allowedOrigins.isBlank()) return List.of();
+		return Arrays.stream(allowedOrigins.split(","))
+			.map(String::trim)
+			.filter(s -> !s.isEmpty())
+			.toList();
 	}
 }

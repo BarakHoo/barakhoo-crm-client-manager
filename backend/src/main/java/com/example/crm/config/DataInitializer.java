@@ -18,7 +18,7 @@ public class DataInitializer {
 	@Value("${app.initial.admin.username:admin}")
 	private String adminUsername;
 
-	@Value("${app.initial.admin.password:admin}")
+	@Value("${app.initial.admin.password:}")
 	private String adminPassword;
 
 	@Bean
@@ -29,8 +29,13 @@ public class DataInitializer {
 			var manager = roleRepo.findByName("agent_manager").orElseGet(() -> { var r = new Role(); r.setName("agent_manager"); return roleRepo.save(r); });
 			var boss = roleRepo.findByName("big_boss").orElseGet(() -> { var r = new Role(); r.setName("big_boss"); return roleRepo.save(r); });
 
-			// create initial admin if not present
+			// create initial admin only if an explicit, strong password is configured
 			if (userRepo.findByUsername(adminUsername).isEmpty()) {
+				if (adminPassword == null || adminPassword.trim().length() < 8) {
+					System.err.println("Skipping initial admin creation: set app.initial.admin.password "
+						+ "(min 8 chars) to bootstrap the first big_boss user. Refusing to create a default/weak admin account.");
+					return;
+				}
 				var u = new User();
 				u.setUsername(adminUsername);
 				u.setEmail(adminUsername + "@localhost");

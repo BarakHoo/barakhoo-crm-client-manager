@@ -102,6 +102,10 @@ public class ClientController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ClientDTO> update(@PathVariable UUID id, @Valid @RequestBody Client client) {
+		// Enforce access control: sales agents may only update their own assigned clients.
+		var existingOpt = service.get(id);
+		if (existingOpt.isEmpty()) return ResponseEntity.notFound().build();
+		if (!canAccessClient(existingOpt.get())) return ResponseEntity.status(403).build();
 		return service.update(id, client).map(c -> {
 			var auth = SecurityContextHolder.getContext().getAuthentication();
 			var roles = auth == null ? java.util.List.<String>of() : auth.getAuthorities().stream().map(a -> a.getAuthority()).toList();
@@ -110,6 +114,7 @@ public class ClientController {
 		}).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
+	@PreAuthorize("hasAnyRole('agent_manager', 'big_boss')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable UUID id) {
 		service.delete(id);
@@ -122,7 +127,10 @@ public class ClientController {
 		if (note.isBlank()) return ResponseEntity.badRequest().build();
 		// keep backward-compatible behavior: create a Note entity
 		try {
-			var created = service.addNote(id, note);
+			var clientOpt = service.get(id);
+			if (clientOpt.isEmpty()) return ResponseEntity.notFound().build();
+			if (!canAccessClient(clientOpt.get())) return ResponseEntity.status(403).build();
+			service.addNote(id, note);
 			return ResponseEntity.ok().build();
 		} catch (Exception ex) {
 			return ResponseEntity.notFound().build();
